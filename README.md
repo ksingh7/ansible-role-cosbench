@@ -21,7 +21,22 @@ cosbench_version: 0.4.2.c3
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+This role depends on a specific naming convention of hostgroups in your inventory file. Your ansible inventory file should look like this
+```
+[cosbench-controller]
+client1
+
+[cosbench-driver]
+client1
+client2
+client3
+
+[cosbench:children]
+cosbench-controller
+cosbench-driver
+
+```
+
 
 Example Playbook
 ----------------
