@@ -3,4 +3,4 @@
   hosts: cosbench 
   tags: cosbench 
   roles: 
-  - roles/cosbench 
+  - ansible-role-cosbench 
