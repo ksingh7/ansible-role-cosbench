@@ -1,7 +1,9 @@
 # {{ ansible_managed }}
 
 [controller]
-concurrency=1
+concurrency = 1
+name = {{ hostvars[inventory_hostname]['ansible_hostname'] }}
+url = http://{{hostvars[inventory_hostname]['ansible_default_ipv4']['address']}}:19088/controller
 drivers ={% for host in groups['cosbench-driver'] %}{% if loop.index == 1 %} {{loop.length}}{% endif %}{% endfor %} 
 log_level = INFO
 log_file = log/system.log
