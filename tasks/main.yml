@@ -1,0 +1,33 @@
+---
+- name: install cosbench dependencies
+  package: name={{ item }} state=present
+  with_items: "{{package_list}}"
+
+- name: create directory for cosbench
+  file:
+   path: "{{ansible_user_dir}}/cosbench" 
+   state: directory
+
+- name: Download cosbench binaries
+  get_url: url={{cosbench_url}} dest={{ansible_user_dir}}/cosbench
+
+- name: Extract cosbench binaries
+  unarchive: src={{ansible_user_dir}}/cosbench/{{cosbench_version}}.zip dest={{ansible_user_dir}}/cosbench
+
+- name: Add executable permission
+  shell: "chmod +x *.sh"
+  args:
+    chdir: "{{ansible_user_dir}}/cosbench/{{cosbench_version}}"
+
+- name: correcting nc parameters in cosbench startup script
+  lineinfile:
+       dest: "{{ansible_user_dir}}/cosbench/{{cosbench_version}}/cosbench-start.sh"
+       regexp: 'TOOL_PARAMS='
+       line: 'TOOL_PARAMS=""'
+
+- include: cosbench_controller.yml
+  when: inventory_hostname in groups['cosbench-controller'] 
+
+- include: cosbench_driver.yml
+  when: inventory_hostname in groups['cosbench-driver']
+

@@ -1,0 +1,11 @@
+[cosbench-controller]
+client1
+
+[cosbench-driver]
+client1
+client2
+client3
+
+[cosbench:children]
+cosbench-controller
+cosbench-driver

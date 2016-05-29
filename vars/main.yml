@@ -1,0 +1,8 @@
+---
+# vars file for cosbench
+package_list:
+  - java
+  - nmap-ncat
+  - unzip
+cosbench_version: 0.4.2.c3
+cosbench_url: "https://github.com/intel-cloud/cosbench/releases/download/v{{cosbench_version}}/{{cosbench_version}}.zip"

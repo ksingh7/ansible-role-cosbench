@@ -1,0 +1,9 @@
+---
+- name: Configuring controller configuration file
+  template: src=controller.conf.j2 dest="{{ansible_user_dir}}/cosbench/{{cosbench_version}}/conf/controller.conf"
+
+- name: start cosbench controller
+  command: "sh start-controller.sh"
+  args:
+    chdir: "{{ansible_user_dir}}/cosbench/{{cosbench_version}}"
+

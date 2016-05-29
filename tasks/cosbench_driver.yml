@@ -1,0 +1,8 @@
+---
+- name: Configuring cosbench driver configuration file
+  template: src=driver.conf.j2 dest="{{ansible_user_dir}}/cosbench/{{cosbench_version}}/conf/driver.conf"
+
+#- name: start cosbench driver
+# command: "sh start-driver.sh"
+# args:
+#   chdir: "{{ansible_user_dir}}/cosbench/{{cosbench_version}}"

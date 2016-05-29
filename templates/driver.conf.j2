@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+
+[driver]
+name = {{ hostvars[inventory_hostname]['ansible_hostname'] }}
+url = http://{{hostvars[inventory_hostname]['ansible_default_ipv4']['address']}}:18088/driver
+
