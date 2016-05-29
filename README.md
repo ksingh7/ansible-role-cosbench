@@ -16,12 +16,15 @@ If you want to install any other version of COSBench , update the following vari
 ```
 cosbench_version: 0.4.2.c3
 ```
+Installation
+------------
 
+```$ ansible-galaxy install ksingh7.cosbench```
 
 Dependencies
 ------------
-
-This role depends on a specific naming convention of hostgroups in your inventory file. Your ansible inventory file should look like this
+- Role ``ksingh7.cosbench``must be installed
+- This role depends on a specific naming convention of hostgroups in your inventory file. So your ansible inventory file should look like this
 ```
 [cosbench-controller]
 client1
@@ -43,9 +46,9 @@ Example Playbook
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-    - hosts: servers
+    - hosts: cosbench
       roles:
-         - { role: username.rolename, x: 42 }
+         - { role: ksingh7.cosbench }
 
 License
 -------
