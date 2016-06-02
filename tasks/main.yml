@@ -8,11 +8,8 @@
    path: "{{ansible_user_dir}}/cosbench" 
    state: directory
 
-- name: Download cosbench binaries
-  get_url: url={{cosbench_url}} dest={{ansible_user_dir}}/cosbench
-
-- name: Extract cosbench binaries
-  unarchive: src={{ansible_user_dir}}/cosbench/{{cosbench_version}}.zip dest={{ansible_user_dir}}/cosbench
+- name: Downloading and extracting cosbench binaries
+  unarchive: src={{cosbench_url}} dest={{ansible_user_dir}}/cosbench copy=no
 
 - name: Add executable permission
   shell: "chmod +x *.sh"
