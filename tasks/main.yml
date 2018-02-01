@@ -2,6 +2,7 @@
 - name: install cosbench dependencies
   package: name={{ item }} state=present
   with_items: "{{package_list}}"
+  become: true
 
 - name: create directory for cosbench
   file:
