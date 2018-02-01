@@ -1,0 +1,48 @@
+---
+- name: install cosbench dependencies
+  package: name={{ item }} state=present
+  with_items: "{{package_list}}"
+  become: true
+
+- name: install libselinux-python in Fedora.
+  package: name=libselinux-python state=present
+  become: true
+  when: ansible_distribution == "Fedora"
+
+- name: create directory for cosbench
+  file:
+   path: "{{ansible_user_dir}}/cosbench" 
+   state: directory
+
+#- name: Downloading and extracting cosbench binaries
+#  unarchive: src={{cosbench_url}} dest={{ansible_user_dir}}/cosbench copy=no
+## We are manually downloading and extracting cosbench binaries , because for some 
+### reason ansible unarchive module is failing to do it
+#
+#- name: Downloading and extracting cosbench binaries
+#  unarchive: src={{cosbench_url}} dest={{ansible_user_dir}}/cosbench copy=no
+
+- name: Downloading COSBench binaries
+  get_url: url={{cosbench_url}} dest={{ansible_user_dir}}/cosbench
+
+- name: Extracting COSBench binaries
+  command: unzip {{cosbench_version}}.zip
+  args:
+     chdir: "{{ansible_user_dir}}/cosbench"
+
+- name: Add executable permission
+  shell: "chmod +x *.sh"
+  args:
+    chdir: "{{ansible_user_dir}}/cosbench/{{cosbench_version}}"
+
+- name: correcting nc parameters in cosbench startup script
+  lineinfile:
+       dest: "{{ansible_user_dir}}/cosbench/{{cosbench_version}}/cosbench-start.sh"
+       regexp: 'TOOL_PARAMS='
+       line: 'TOOL_PARAMS=""'
+
+- import_tasks: cosbench_driver.yml
+  when: inventory_hostname in groups['cosbench-driver']
+
+- import_tasks: cosbench_controller.yml
+  when: inventory_hostname in groups['cosbench-controller']

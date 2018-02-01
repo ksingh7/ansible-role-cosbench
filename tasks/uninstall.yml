@@ -1,0 +1,31 @@
+---
+- name: uninstall cosbench dependencies
+  package: name={{ item }} state=absent
+  with_items: "{{package_list}}"
+  become: true
+
+- name: uninstall libselinux-python in Fedora.
+  package: name=libselinux-python state=absent
+  become: true
+  when: ansible_distribution == "Fedora"
+
+- name: stop cosbench controller
+  command: "sh stop-controller.sh"
+  args:
+    chdir: "{{ansible_user_dir}}/cosbench/{{cosbench_version}}"
+  when: controller_running.rc == 0
+  ignore_errors: True
+  when: inventory_hostname in groups['cosbench-controller']
+
+- name: stop cosbench driver
+  command: "sh stop-driver.sh"
+  args:
+    chdir: "{{ansible_user_dir}}/cosbench/{{cosbench_version}}"
+  when: driver_running.rc == 0
+  ignore_errors: True
+  when: inventory_hostname in groups['cosbench-driver']
+
+- name: remove directory for cosbench
+  file:
+   path: "{{ansible_user_dir}}/cosbench" 
+   state: absent
