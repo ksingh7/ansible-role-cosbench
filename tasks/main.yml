@@ -5,4 +5,4 @@
   when: (uninstall is undefined or uninstall == False  )
 
 - import_tasks: uninstall.yml
-  when: uninstall
+  when: (uninstall is defined and uninstall)
