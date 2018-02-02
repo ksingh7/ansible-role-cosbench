@@ -6,3 +6,4 @@ package_list:
   - unzip
 cosbench_version: 0.4.2.c4
 cosbench_url: "https://github.com/intel-cloud/cosbench/releases/download/v{{cosbench_version}}/{{cosbench_version}}.zip"
+#cosbench_binary_path: "/opt/0.4.2.c4.zip"

@@ -1,5 +1,7 @@
 ---
-- debug: var=uninstall
+- debug: 
+    var: uninstall
+    verbosity: 2
 
 - import_tasks: install.yml
   when: (uninstall is undefined or uninstall == False  )
