@@ -1,0 +1,58 @@
+---
+- name: install cosbench dependencies
+  package: name={{ item }} state=present
+  with_items: "{{package_list}}"
+  become: true
+
+- name: install libselinux-python in Fedora.
+  package: name=libselinux-python state=present
+  become: true
+  when: ansible_distribution == "Fedora"
+
+- name: create directory for cosbench
+  file:
+   path: "{{ansible_user_dir}}/cosbench" 
+   state: directory
+
+- name: Downloading COSBench binaries
+  get_url: url={{cosbench_url}} dest="{{ ansible_user_dir }}/cosbench"
+  when: cosbench_binary_path is undefined
+
+- name: Copy COSBench binaries
+  copy:
+    src: "{{ cosbench_binary_path }}"
+    dest: "{{ ansible_user_dir }}/cosbench"
+    mode: 0644
+  when: cosbench_binary_path is defined
+
+- name: Extracting COSBench binaries
+  command: unzip {{cosbench_version}}.zip
+  args:
+     chdir: "{{ansible_user_dir}}/cosbench"
+
+- name: Add executable permission
+  shell: "chmod +x *.sh"
+  args:
+    chdir: "{{ansible_user_dir}}/cosbench/{{cosbench_version}}"
+
+- name: correcting nc parameters in cosbench startup script
+  lineinfile:
+       dest: "{{ansible_user_dir}}/cosbench/{{cosbench_version}}/cosbench-start.sh"
+       regexp: 'TOOL_PARAMS='
+       line: 'TOOL_PARAMS=""'
+
+- import_tasks: cosbench_driver.yml
+  when: inventory_hostname in groups['cosbench-driver']
+
+- import_tasks: cosbench_controller.yml
+  when: inventory_hostname in groups['cosbench-controller']
+
+- name: "show controller urls"
+  debug: msg="Controller URL http://{{ ansible_eth0.ipv4.address }}:19088/controller/index.html"
+  run_once: true
+  with_items: "{{ groups['cosbench-controller'] }}"
+
+- name: "show drivers urls"
+  debug: msg="Driver URL http://{{ ansible_eth0.ipv4.address }}:18088/driver/index.html"
+  run_once: true
+  with_items: "{{ groups['cosbench-driver'] }}"

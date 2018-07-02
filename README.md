@@ -16,7 +16,7 @@ Customization
 Variable file :  ``vars/main.yml``
 If you want to install any other version of COSBench , update the following variable
 ```
-cosbench_version: 0.4.2.c3
+cosbench_version: 0.4.2.c4
 ```
 Dependencies
 ------------
@@ -41,7 +41,19 @@ Your playbook should look like this
 
     - hosts: cosbench
       roles:
-         - { role: ksingh7.cosbench }
+         - { role: ansible-role-cosbench }
+
+To install cosbench:
+
+```
+ansible-playbook -i cosbench-hosts  cosbench-playbook.yml
+```
+
+To uninstall it:
+
+```
+ansible-playbook -i cosbench-hosts  cosbench-playbook.yml -e "uninstall=True"
+```
 
 License
 -------
@@ -51,4 +63,6 @@ Apache
 Author Information
 ------------------
 
-This role was created by [Karan Singh](http://www.ksingh.co.in)
+Originially created by created [Karan Singh](http://www.ksingh.co.in).
+
+

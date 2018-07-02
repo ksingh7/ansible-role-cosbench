@@ -1,0 +1,43 @@
+---
+- name: uninstall cosbench dependencies
+  package: name={{ item }} state=absent
+  with_items: "{{package_list}}"
+  become: true
+
+- name: uninstall libselinux-python in Fedora.
+  package: name=libselinux-python state=absent
+  become: true
+  when: ansible_distribution == "Fedora"
+
+# Stop controller
+- name: stop cosbench controller
+  command: "sh stop-controller.sh"
+  args:
+    chdir: "{{ansible_user_dir}}/cosbench/{{cosbench_version}}"
+  ignore_errors: True
+  when: inventory_hostname in groups['cosbench-controller']
+
+- name: kill cosbench controller in case it did not stop.
+  shell: 'pkill -9 -f "java -Dcosbench.tomcat.config=conf/controller-tomcat-server.xml"'
+  become: true
+  ignore_errors: True
+  when: inventory_hostname in groups['cosbench-controller']
+
+# Stop driver
+- name: stop cosbench driver
+  command: "sh stop-driver.sh"
+  args:
+    chdir: "{{ansible_user_dir}}/cosbench/{{cosbench_version}}"
+  ignore_errors: True
+  when: inventory_hostname in groups['cosbench-driver']
+
+- name: kill cosbench driver in case it did not stop.
+  shell: 'pkill -9 -f "java -Dcosbench.tomcat.config=conf/driver-tomcat-server.xml"'
+  become: true
+  ignore_errors: True
+  when: inventory_hostname in groups['cosbench-driver']
+
+- name: remove directory for cosbench
+  file:
+   path: "{{ansible_user_dir}}/cosbench" 
+   state: absent
